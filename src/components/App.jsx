@@ -1,5 +1,5 @@
-import React from 'react';
-import { Component } from 'react';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 // import { Form } from './form/form';
 import { nanoid } from 'nanoid';
 import { FilterCon } from './FilterContacts/FilterContacts';
@@ -8,7 +8,8 @@ import { Layout } from './Layout';
 import { Title, TitleBook } from './App.styled';
 import { GlobalStyle } from './GlobalStyled';
 import { FormFormik } from './form/FormFormik';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // const contactList = [
 //   { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
 //   { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
@@ -16,33 +17,21 @@ import { FormFormik } from './form/FormFormik';
 //   { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
 // ];
 
-export class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
-  componentDidMount() {
-    const contactStorage = JSON.parse(localStorage.getItem('contactList'));
-    // console.log(contactStorage);
-    if (contactStorage) {
-      this.setState({
-        contacts: contactStorage,
-      });
-    }
-  }
+export const App = () => {
+  const [contacts, setContacts] = useState(
+    () => JSON.parse(localStorage.getItem('contactList')) ?? []
+  );
+  const [filter, setFilter] = useState('');
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.contacts !== this.state.contacts) {
-      localStorage.setItem('contactList', JSON.stringify(this.state.contacts));
-    }
-  }
+  useEffect(() => {
+    localStorage.setItem('contactList', JSON.stringify(contacts));
+  }, [contacts]);
 
-  filtered = event => {
-    this.setState({ filter: event.target.value });
-    console.log(this.state.filter);
+  const filtered = event => {
+    setFilter(event.target.value);
   };
 
-  addContacts = formValues => {
+  const addContacts = formValues => {
     const { name, number } = formValues;
     const contact = {
       id: nanoid(),
@@ -50,43 +39,108 @@ export class App extends Component {
       number,
     };
 
-    if (this.state.contacts.some(cont => cont.name === contact.name)) {
-      return alert(`${contact.name} is already in contacts`);
-    } else {
-      this.setState(prevState => ({
-        contacts: [...prevState.contacts, contact],
-      }));
+    if (contacts.some(cont => cont.name === contact.name)) {
+      return toast.warn(`${contact.name} is already in contacts`);
     }
+    setContacts(prevContacts => [...prevContacts, contact]);
   };
 
-  deleteContact = id => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(cont => cont.id !== id),
-    }));
+  const deleteContact = id => {
+    setContacts(prevContacts => prevContacts.filter(cont => cont.id !== id));
     console.log(id);
   };
 
-  render() {
-    const visibleContact = this.state.contacts.filter(contact =>
-      contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
-    );
+  const visibleContact = contacts.filter(contact =>
+    contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+  return (
+    <Layout>
+      <Title>PHONEBOOK</Title>
 
-    return (
-      <Layout>
-        <Title>PHONEBOOK</Title>
+      <FormFormik addContacts={addContacts} />
 
-        <FormFormik addContacts={this.addContacts} />
+      <TitleBook>CONTACTS</TitleBook>
 
-        <TitleBook>CONTACTS</TitleBook>
+      <FilterCon filter={filter} contFilter={filtered} />
 
-        <FilterCon filter={this.state.filter} contFilter={this.filtered} />
+      <ContactList dataRender={visibleContact} onClickDelete={deleteContact} />
+      <GlobalStyle />
+      <ToastContainer position="top-center" autoClose={3000} theme="dark" />
+    </Layout>
+  );
+};
 
-        <ContactList
-          dataRender={visibleContact}
-          onClickDelete={this.deleteContact}
-        />
-        <GlobalStyle />
-      </Layout>
-    );
-  }
-}
+// export class App extends Component {
+// state = {
+//   contacts: [],
+//   filter: '',
+// };
+// componentDidMount() {
+//   const contactStorage = JSON.parse(localStorage.getItem('contactList'));
+//   // console.log(contactStorage);
+//   if (contactStorage) {
+//     this.setState({
+//       contacts: contactStorage,
+//     });
+//   }
+// }
+
+// componentDidUpdate(prevProps, prevState) {
+//   if (prevState.contacts !== this.state.contacts) {
+//     localStorage.setItem('contactList', JSON.stringify(this.state.contacts));
+//   }
+// }
+
+// filtered = event => {
+//   this.setState({ filter: event.target.value });
+//   console.log(this.state.filter);
+// };
+
+// addContacts = formValues => {
+//   const { name, number } = formValues;
+//   const contact = {
+//     id: nanoid(),
+//     name,
+//     number,
+//   };
+
+//   if (this.state.contacts.some(cont => cont.name === contact.name)) {
+//     return alert(`${contact.name} is already in contacts`);
+//   } else {
+//     this.setState(prevState => ({
+//       contacts: [...prevState.contacts, contact],
+//     }));
+//   }
+// };
+
+// deleteContact = id => {
+//   this.setState(prevState => ({
+//     contacts: prevState.contacts.filter(cont => cont.id !== id),
+//   }));
+//   console.log(id);
+// };
+
+// render() {
+// const visibleContact = this.state.contacts.filter(contact =>
+//   contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
+// );
+
+//     return (
+//       <Layout>
+//         <Title>PHONEBOOK</Title>
+
+//         <FormFormik addContacts={this.addContacts} />
+
+//         <TitleBook>CONTACTS</TitleBook>
+
+//         <FilterCon filter={this.state.filter} contFilter={this.filtered} />
+
+//         <ContactList
+//           dataRender={visibleContact}
+//           onClickDelete={this.deleteContact}
+//         />
+//         <GlobalStyle />
+//       </Layout>
+//     );
+//   }
+// }
