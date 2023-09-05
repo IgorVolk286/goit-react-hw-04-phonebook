@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
 // import { Form } from './form/form';
 import { nanoid } from 'nanoid';
 import { FilterCon } from './FilterContacts/FilterContacts';
@@ -69,78 +69,3 @@ export const App = () => {
     </Layout>
   );
 };
-
-// export class App extends Component {
-// state = {
-//   contacts: [],
-//   filter: '',
-// };
-// componentDidMount() {
-//   const contactStorage = JSON.parse(localStorage.getItem('contactList'));
-//   // console.log(contactStorage);
-//   if (contactStorage) {
-//     this.setState({
-//       contacts: contactStorage,
-//     });
-//   }
-// }
-
-// componentDidUpdate(prevProps, prevState) {
-//   if (prevState.contacts !== this.state.contacts) {
-//     localStorage.setItem('contactList', JSON.stringify(this.state.contacts));
-//   }
-// }
-
-// filtered = event => {
-//   this.setState({ filter: event.target.value });
-//   console.log(this.state.filter);
-// };
-
-// addContacts = formValues => {
-//   const { name, number } = formValues;
-//   const contact = {
-//     id: nanoid(),
-//     name,
-//     number,
-//   };
-
-//   if (this.state.contacts.some(cont => cont.name === contact.name)) {
-//     return alert(`${contact.name} is already in contacts`);
-//   } else {
-//     this.setState(prevState => ({
-//       contacts: [...prevState.contacts, contact],
-//     }));
-//   }
-// };
-
-// deleteContact = id => {
-//   this.setState(prevState => ({
-//     contacts: prevState.contacts.filter(cont => cont.id !== id),
-//   }));
-//   console.log(id);
-// };
-
-// render() {
-// const visibleContact = this.state.contacts.filter(contact =>
-//   contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
-// );
-
-//     return (
-//       <Layout>
-//         <Title>PHONEBOOK</Title>
-
-//         <FormFormik addContacts={this.addContacts} />
-
-//         <TitleBook>CONTACTS</TitleBook>
-
-//         <FilterCon filter={this.state.filter} contFilter={this.filtered} />
-
-//         <ContactList
-//           dataRender={visibleContact}
-//           onClickDelete={this.deleteContact}
-//         />
-//         <GlobalStyle />
-//       </Layout>
-//     );
-//   }
-// }
