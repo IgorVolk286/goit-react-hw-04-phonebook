@@ -53,6 +53,7 @@ export const App = () => {
   const visibleContact = contacts.filter(contact =>
     contact.name.toLowerCase().includes(filter.toLowerCase())
   );
+
   return (
     <Layout>
       <Title>PHONEBOOK</Title>
