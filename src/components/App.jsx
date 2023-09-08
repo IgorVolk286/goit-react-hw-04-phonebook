@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 // import { Form } from './form/form';
 import { nanoid } from 'nanoid';
@@ -50,9 +50,11 @@ export const App = () => {
     console.log(id);
   };
 
-  const visibleContact = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+  const visibleContact = useMemo(() => {
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  }, [filter, contacts]);
 
   return (
     <Layout>
